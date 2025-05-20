@@ -1,0 +1,79 @@
+import React from 'react';
+import { Head, useForm } from '@inertiajs/react';
+import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
+import InputError from '@/Components/InputError';
+import InputLabel from '@/Components/InputLabel';
+import PrimaryButton from '@/Components/PrimaryButton';
+import TextInput from '@/Components/TextInput';
+import { Link } from '@inertiajs/react';
+
+export default function Create({ auth }) {
+    const { data, setData, post, processing, errors, reset } = useForm({
+        title: '',
+        content: '',
+    });
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        post(route('announcements.store'), { onSuccess: () => reset() });
+    };
+
+    return (
+        <AuthenticatedLayout
+            user={auth.user}
+            header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">Create Announcement</h2>}
+        >
+            <Head title="Create Announcement" />
+
+            <div className="py-12">
+                <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
+                    <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg">
+                        <div className="p-6 text-gray-900">
+                            <form onSubmit={handleSubmit}>
+                                <div className="mb-4">
+                                    <InputLabel htmlFor="title" value="Title" />
+                                    <TextInput
+                                        id="title"
+                                        type="text"
+                                        name="title"
+                                        value={data.title}
+                                        className="mt-1 block w-full"
+                                        onChange={(e) => setData('title', e.target.value)}
+                                        required
+                                    />
+                                    <InputError message={errors.title} className="mt-2" />
+                                </div>
+
+                                <div className="mb-4">
+                                    <InputLabel htmlFor="content" value="Content" />
+                                    <textarea
+                                        id="content"
+                                        name="content"
+                                        value={data.content}
+                                        className="mt-1 block w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm"
+                                        rows="6"
+                                        onChange={(e) => setData('content', e.target.value)}
+                                        required
+                                    ></textarea>
+                                    <InputError message={errors.content} className="mt-2" />
+                                </div>
+
+                                <div className="flex items-center justify-between mt-4">
+                                    <Link
+                                        href={route('announcements.index')}
+                                        className="text-gray-600 hover:underline"
+                                    >
+                                        Cancel
+                                    </Link>
+                                    <PrimaryButton disabled={processing}>
+                                        Create Announcement
+                                    </PrimaryButton>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </AuthenticatedLayout>
+    );
+}
